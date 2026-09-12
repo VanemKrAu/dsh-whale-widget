@@ -4,6 +4,35 @@
 
 DeepSeek Harness（DSH）Web 界面右下角的常驻余额挂件：小鲸鱼气泡图 + DeepSeek API 余额 + 今日已用 + 每轮对话消耗统计，每次打开界面自动启用。本项目是标准 DSH 插件包，可通过 `dsh plugin` 安装/卸载。
 
+> **本仓库是定制 fork** —— 基于 [MeteorNOX/DeepSeek-Balance-Whale-Widget](https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget)，保留原作者版权与 MIT 许可；在其基础上增加了 **CommandCode 订阅用量**支持与若干修复。
+
+## 本 fork 相对上游的新增与修复
+
+- 🔀 **双数据源 · 自动跟随**：挂件自动识别当前会话实际使用的模型并切换计费口径 —— 走 DeepSeek 官方显示**余额（¥）**，走 CommandCode 显示**订阅额度用量（%）**，无需手动切换
+  - 判定规则：模型 id 带 provider 前缀（如 `deepseek/deepseek-v4-flash`）= CommandCode；不带前缀（如 `deepseek-v4-flash`、`deepseek-chat`）= DeepSeek 官方
+  - 菜单「计费」默认 **自动跟随(推荐)**，也可手动强制指定
+- 📈 **CommandCode 用量显示**：主数字 = 当月**已用**额度百分比；副行 = 5 小时窗口已用；点击气泡显示峰谷时段
+- 🧾 **每轮消耗弹窗（CommandCode 口径）**：每轮对话结束弹出本轮真实 token 量与剩余月额度
+- ⏰ **峰谷时段**：与 DeepSeek 官方同一判定（工作日 9:00–12:00 / 14:00–18:00 高峰，周末全天谷价）
+- 💾 **记住上次 provider**：重启后自动恢复上次使用的 provider 显示，不再默认跳回官方
+- 🐛 **修复**：数据源切换即时生效（无需重启）、气泡文字溢出、额度接口数据缺失时不再误显示 100%
+
+## 安装（全新设备可直接使用）
+
+| 前置项 | 说明 |
+| --- | --- |
+| DSH | DeepSeek Harness，`web` profile（本插件为宿主侧 bundle 插件） |
+| 凭据 | 至少配置 `DEEPSEEK_API_KEY`（读官方余额）；如需 CommandCode 用量再配 `COMMANDCODE_API_KEY` |
+| 依赖 | 插件自包含（assets 随包、无外部 npm 依赖），仅用 Node 内置模块 |
+
+凭据通过 DSH 凭据系统读取（`~/.dsh/.credentials.yaml`）：插件只调用 `ctx.credentials.resolve()`，**不会把密钥写入插件目录、配置文件或日志**。
+
+```powershell
+dsh plugin --profile web add github:VanemKrAu/dsh-whale-widget
+```
+
+安装后重启 `dsh web`，浏览器 F5 刷新，右下角即出现小鲸鱼挂件。
+
 ## 特性
 
 - 🐋 **常驻自启**：随 DSH Web 界面每次打开自动出现（标准 DSH bundle 插件）
