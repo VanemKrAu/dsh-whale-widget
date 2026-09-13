@@ -37,16 +37,16 @@ dsh plugin --profile web add github:VanemKrAu/dsh-whale-widget
 
 - 🐋 **常驻自启**：随 DSH Web 界面每次打开自动出现（标准 DSH bundle 插件）
 - 💰 **余额**：60 秒自动刷新 + 点击鲸鱼手动刷新；余额变化时数字**滚动动画**；瞬时网络抖动自动沿用最近余额不报错
-- 📊 **今日已用**：两种模式任选（见下），显示今日消耗金额
-  - **小鲸鱼记账（推荐，免令牌）**：不需要任何会话令牌，鲸鱼娘每次观测余额后用余额差值自动记账（`.dshw-usage.json`，跨天自动归零归档）
-  - **实时·令牌**：填入平台会话令牌后直接调用平台用量接口，按**峰谷定价**（工作日高峰 9:00–12:00 与 14:00–18:00，其余空闲；2026-08-23 起周末全天按谷价）实时换算今日已用
+- 📊 **今日已用**：两种口径任选（见下），显示今日消耗金额
+  - **官方 · 余额(记账)（推荐，免令牌）**：不需要任何会话令牌，鲸鱼娘每次观测余额后用余额差值自动记账（`.dshw-usage.json`，跨天自动归零归档）
+  - **官方 · 余额(令牌)**：填入平台会话令牌后直接调用平台用量接口，按**峰谷定价**（工作日高峰 9:00–12:00 与 14:00–18:00，其余空闲；2026-08-23 起周末全天按谷价）实时换算今日已用
 - 💬 **每轮对话消耗统计**：监听本机会话事件，每轮对话结束后弹出本轮消耗金额（精确 usage，非估算）
   - 菜单可开关「每轮对话后自动显示消耗金额」；「自动关闭时间」可自定义秒数（填 0 表示不自动关闭）
   - 消耗金额泡泡显示期间，余额变动不弹普通泡泡
 - 🖱️ **拖拽 + 四边四分之一吸附**（左/右/上/下，角落可组合）
 - 🔄 左吸附时整体**水平镜像翻转**（文字同步反向、带动画）
 - 🧸 **按压 Q 弹**玩偶效果（按压时底部坐标不变）
-- 🎚️ **汉堡菜单**（悬停鲸鱼右上角出现）：大小滑块（0.6–2.5 倍）、音效切换（小黄鸭 / 音效1）、音量调节、用量模式、峰谷提示文案（默认 / 梁文峰谷 / !?强强?!）、气泡开关、每轮消耗开关与自动关闭时间
+- 🎚️ **汉堡菜单**（悬停鲸鱼右上角出现）：大小滑块（0.6–2.5 倍）、音效切换（小黄鸭 / 音效1）、音量调节、**计费**（自动跟随(推荐) / 官方·余额(记账) / 官方·余额(令牌) / CommandCode 用量）、峰谷提示文案（默认 / 梁文峰谷 / !?强强?!）、气泡开关、每轮消耗提示、自动关闭秒数、**避让滚动条**（开关 + 宽度 px，默认 17px，关闭则贴边）
 - 🔊 **音效**：按压/松手音效（可选包内 mp3，缺失时静默降级）
 - 💬 **随机台词**：点击气泡切换随机台词段（加权随机，含峰谷提示/今日已用/gif 动图/卖萌吐槽），再点一次关闭；气泡总显示 5 秒自动收起
 - 📐 随浏览器窗口自动缩放；文字位置/字号与图片联动
@@ -77,7 +77,7 @@ dsh-whale-widget/
 无需本地克隆，一条命令安装：
 
 ```powershell
-dsh plugin --profile web add github:MeteorNOX/DeepSeek-Balance-Whale-Widget
+dsh plugin --profile web add github:VanemKrAu/dsh-whale-widget
 ```
 
 说明：
@@ -85,13 +85,13 @@ dsh plugin --profile web add github:MeteorNOX/DeepSeek-Balance-Whale-Widget
 - 装完后插件会出现在 DSH 的**插件管理页面**里，之后可以直接在页面里更新，无需再手动执行命令
 - 网络环境需要代理时，先设置代理环境变量再执行：
   ```powershell
-  $env:http_proxy="http://<ip>:<port>"; $env:https_proxy="http://<ip>:<port>"; $env:all_proxy="socks5://<ip>:<port>"; dsh plugin --profile web add github:MeteorNOX/DeepSeek-Balance-Whale-Widget
+  $env:http_proxy="http://<ip>:<port>"; $env:https_proxy="http://<ip>:<port>"; $env:all_proxy="socks5://<ip>:<port>"; dsh plugin --profile web add github:VanemKrAu/dsh-whale-widget
   ```
 - 安装完成后重启 `dsh web`，再 F5 刷新浏览器
 
 ### 方式 B：本地安装（从当前仓库）
 
-在**仓库根目录**（`DeepSeek-Balance-Whale-Widget`，即 `package.json` 所在目录）执行：
+在**仓库根目录**（`dsh-whale-widget`，即 `package.json` 所在目录）执行：
 
 ```powershell
 dsh plugin --profile web add link:.
@@ -102,30 +102,34 @@ dsh plugin --profile web add link:.
 - `dsh plugin` 会把参数转发给 pnpm，并在成功后自动把 `dsh-whale-widget` 加入 `dsh.profile.bundles`
 - **`link:.` 表示链接当前目录**（仓库根目录本身就是插件包）。如果你复制了仓库到别处，用绝对路径：
   ```powershell
-  dsh plugin --profile web add link:D:\你的路径\DeepSeek-Balance-Whale-Widget
+  dsh plugin --profile web add link:D:\你的路径\dsh-whale-widget
   ```
 - ⚠️ 不要用 `link:.\dsh-whale-widget`——仓库里**没有** `dsh-whale-widget/` 子目录，这样会安装成普通依赖而非插件，重启后挂件不出现
 - 安装完成后重启 `dsh web`，再 F5 刷新浏览器
 - **如果之后移动了源码目录**，必须重新执行一次 `dsh plugin --profile web add link:.<新路径>`。若提示已存在/冲突，先 `dsh plugin --profile web remove dsh-whale-widget` 再重新 add
 
-### 方式 C：发布到 npm 后安装
+### 方式 C：从 npm 安装（⚠️ 装到的是上游旧版，不建议）
+
+`dsh-whale-widget` 这个 npm 包名归**上游** MeteorNOX 所有，npm 上的最新版是上游的 `0.2.10`（2026-08-24 发布），**不含**本 fork 的 CommandCode 双源支持：
 
 ```powershell
-dsh plugin --profile web add dsh-whale-widget
+dsh plugin --profile web add dsh-whale-widget   # ← 实际装到上游 0.2.10
 ```
+
+要用本 fork，请走方式 A 或方式 B。本 fork 不能以同名发布到 npm（包名已被上游占用），如需 npm 分发必须先改名。
 
 ### 给 AI 的安装说明（用 dsh 辅助安装时，直接复制给 AI）
 
 如果你希望让另一个 DSH / AI 助手帮你安装，把下面这段发给它即可：
 
 ```
-请帮我安装插件 dsh-whale-widget，来源是 GitHub 仓库 MeteorNOX/DeepSeek-Balance-Whale-Widget。
+请帮我安装插件 dsh-whale-widget，来源是 GitHub 仓库 VanemKrAu/dsh-whale-widget（带 CommandCode 双源支持的 fork；上游 MeteorNOX/DeepSeek-Balance-Whale-Widget 无此功能，别装错）。
 
 步骤：
 1. 确保 pnpm 可用（没有就先：npm install -g pnpm）
 2. 在 Web profile 安装（任选一种来源）：
    首选，直接从 GitHub 安装（无需本地克隆，装完可在插件管理页面里更新）：
-     dsh plugin --profile web add github:MeteorNOX/DeepSeek-Balance-Whale-Widget
+     dsh plugin --profile web add github:VanemKrAu/dsh-whale-widget
    或从本地仓库链接安装（例如本地克隆的仓库根目录）：
      dsh plugin --profile web add link:.<仓库绝对路径>
    （注意：仓库根目录就是插件包，不要写成 link:.\dsh-whale-widget 这种带子目录的路径）
@@ -142,9 +146,11 @@ dsh plugin --profile web add dsh-whale-widget
 
 ### 关于令牌（安装后必读）
 
-> **默认不需要任何令牌。** 安装后只需配置 `DEEPSEEK_API_KEY`（拉取余额必需），「今日已用」会自动使用默认的**小鲸鱼记账**模式（余额差值本地记账），开箱即用。
+> **默认不需要任何令牌。** 安装后只需配置 `DEEPSEEK_API_KEY`（拉取余额必需），「今日已用」会自动使用默认的**官方 · 余额(记账)**口径（余额差值本地记账），开箱即用。
 >
-> 「实时·令牌」模式用到的 `DEEPSEEK_PLATFORM_TOKEN`（DeepSeek 平台网页会话令牌）是**可选的**，仅在你想要更精确的实时用量换算时才需要配置。获取方式见下方「用量模式使用教程」。
+> 「官方 · 余额(令牌)」口径用到的 `DEEPSEEK_PLATFORM_TOKEN`（DeepSeek 平台网页会话令牌）是**可选的**，仅在你想要更精确的实时用量换算时才需要配置。获取方式见下方「计费与用量模式使用教程」。
+>
+> 要看 CommandCode 订阅用量，另外配置 `COMMANDCODE_API_KEY`（可选，见下方同一节）。
 
 ## 卸载
 
@@ -181,17 +187,31 @@ Remove-Item "$web\DSniang02.png" -ErrorAction SilentlyContinue
 
 清理后再执行上面的安装命令。
 
-## 用量模式使用教程
+## 计费与用量模式使用教程
 
 ### 必需的凭据
 
 - **`DEEPSEEK_API_KEY`**（必需）：DeepSeek API 密钥，用于拉取余额（`api.deepseek.com/user/balance`）。在 DSH 凭据服务中配置即可（`dsh` 的凭据管理界面 / `.dsh/.credentials.yaml`）。
+- **`COMMANDCODE_API_KEY`**（可选）：要看 CommandCode 订阅用量时才需要。
 
-### 两种用量模式
+### 菜单「计费」的四个选项
 
-挂件的「今日已用」有两种模式，在**菜单 → 用量**中选择：
+挂件菜单里的「**计费**」下拉决定主数字按哪种口径显示：
 
-**① 小鲸鱼记账（推荐，默认）—— 完全不需要额外配置**
+| 选项 | 主数字 | 需要的凭据 |
+| --- | --- | --- |
+| **自动跟随(推荐)** | 按当前会话实际模型，自动在官方余额 / CommandCode 用量之间切换 | `DEEPSEEK_API_KEY`（+ `COMMANDCODE_API_KEY`） |
+| **官方 · 余额(记账)** | DeepSeek 余额（¥），今日已用靠余额差值记账 | `DEEPSEEK_API_KEY` |
+| **官方 · 余额(令牌)** | DeepSeek 余额（¥），今日已用调平台用量接口精确换算 | `DEEPSEEK_API_KEY` + `DEEPSEEK_PLATFORM_TOKEN` |
+| **CommandCode 用量** | CommandCode 当月已用额度（%） | `COMMANDCODE_API_KEY` |
+
+判定规则：模型 id 带 provider 前缀（如 `deepseek/deepseek-v4-flash`）→ CommandCode；不带前缀（如 `deepseek-chat`）→ DeepSeek 官方。
+
+### 官方口径下的两种用量算法
+
+选「自动跟随」或任意「官方 · 余额」选项时，「今日已用」的算法有下面两种：
+
+**① 官方 · 余额(记账)（默认）—— 完全不需要额外配置**
 
 鲸鱼娘自己用**余额差值**记账：每次观测到余额下降就把差值累加到当天用量，跨天自动归零归档（保留 30 天）；观测币种发生变化时只重置基准、不记差值（防止多币种账户切换污染账本）。只要配好了 `DEEPSEEK_API_KEY` 就能用，**开箱即用**。
 
@@ -199,7 +219,7 @@ Remove-Item "$web\DSniang02.png" -ErrorAction SilentlyContinue
 - 优点：零配置、免令牌
 - 说明：依赖「观测到的余额下降」累计，若 DSH 关闭期间有消耗会漏记；要精确请用令牌模式
 
-**② 实时·令牌（可选）—— 需要 `DEEPSEEK_PLATFORM_TOKEN`**
+**② 官方 · 余额(令牌)（可选）—— 需要 `DEEPSEEK_PLATFORM_TOKEN`**
 
 鲸鱼娘直接调用 DeepSeek 平台用量接口，按**峰谷定价**实时换算今日已用，**精确到每小时的 token 用量**。
 
@@ -213,10 +233,10 @@ Remove-Item "$web\DSniang02.png" -ErrorAction SilentlyContinue
    # 在 DSH 凭据服务中设置，例如编辑 $env:USERPROFILE\.dsh\.credentials.yaml
    # DEEPSEEK_PLATFORM_TOKEN: <你复制的令牌>
    ```
-6. 重启 `dsh web`，在**菜单 → 用量**里选择「实时·令牌」
+6. 重启 `dsh web`，在**菜单 → 计费**里选择「官方 · 余额(令牌)」
 
 **说明：**
-- ⚠️ **令牌非必需**：不配置时挂件自动使用默认的「小鲸鱼记账」模式，功能不受影响
+- ⚠️ **令牌非必需**：不配置时挂件自动使用默认的「官方 · 余额(记账)」口径，功能不受影响
 - 该令牌是 DeepSeek **平台网页的会话令牌**（不是 `sk-` 开头的 API key），仅在登录平台网页时有效；重新登录后可能需要重新获取
 - 接口不返回金额，只返回 token 分桶，挂件会按内置峰谷定价表换算成金额；定价表在 `lib/index.js` 顶部 `PRICING` 常量，DeepSeek 调价时可自行修改
 
@@ -229,16 +249,21 @@ Remove-Item "$web\DSniang02.png" -ErrorAction SilentlyContinue
 ```powershell
 dsh --profile web --dump-config | Select-String -Pattern "whale"
 
+# 端口：CLI 版 `dsh web` 默认 3080；桌面版（DeepSeek Harness Desktop）用随机回环端口，
+# 以启动时输出的地址为准。
 curl http://127.0.0.1:3080/dsh-whale/image.png
+curl http://127.0.0.1:3080/dsh-whale/widget.js
 curl http://127.0.0.1:3080/dsh-whale/balance.json
 curl http://127.0.0.1:3080/dsh-whale/size.json
 curl http://127.0.0.1:3080/dsh-whale/last-turn.json
 ```
 
 - `/dsh-whale/image.png` → 200 `image/png`
+- `/dsh-whale/widget.js` → 200 JS（宿主自动注入到页面）
 - `/dsh-whale/balance.json` → 200，含 `{"ok":true,"totalBalance":...,"currency":"CNY","todayUsage":...}`
 - `/dsh-whale/size.json` → GET 返回配置；PUT 写入
 - `/dsh-whale/last-turn.json` → 200，含最近一轮对话消耗 `{seq, turn, amount, tokens}`
+- `/dsh-whale/rua.gif`、`/dsh-whale/sound/press.mp3`、`/dsh-whale/sound/release.mp3` → 台词 gif 与音效素材
 - 浏览器 F5 后右下角出现挂件
 
 ## 常见问题
@@ -246,10 +271,11 @@ curl http://127.0.0.1:3080/dsh-whale/last-turn.json
 - **挂件不出现**：确认 `dsh plugin add` 成功；`dsh --profile web --dump-config` 里能看到 `dsh-whale-widget`；重启 `dsh web` 后 F5。
 - **图片不显示**：确认 `assets/DSniang1.png` 在插件包内，且没有把旧文件放在 profile 里占用了同名路由。
 - **余额报「未配置 DEEPSEEK_API_KEY」**：去 DSH 配置凭据。
-- **今日已用显示 --**：记账模式下需要先跑一次余额观测（60 秒内自动完成）；令牌模式需要配置 `DEEPSEEK_PLATFORM_TOKEN`。
-- **每轮消耗不显示**：确认菜单「每轮对话后自动显示消耗金额」已勾选；一轮对话必须完整结束（turn/end）才会结算。
+- **CommandCode 用量显示 --**：确认已配置 `COMMANDCODE_API_KEY`，并在菜单「计费」里选中「CommandCode 用量」或「自动跟随(推荐)」。
+- **今日已用显示 --**：记账口径下需要先跑一次余额观测（60 秒内自动完成）；令牌口径需要配置 `DEEPSEEK_PLATFORM_TOKEN`。
+- **每轮消耗不显示**：确认菜单「每轮消耗提示」已勾选；一轮对话必须完整结束（turn/end）才会结算。
 - **没有声音**：确认 `assets/*.mp3` 在包内；若不想带音效文件，静默降级为无声音。
-- **本地开发改了代码不生效**：使用 `link:` 安装时，修改源码后重启 `dsh web`（ESM 模块缓存）；如果用已发布版本，需要 `npm publish` 新版本后 `dsh plugin --profile web update dsh-whale-widget`。
+- **本地开发改了代码不生效**：使用 `link:` 安装时，修改源码后重启 `dsh web`（ESM 模块缓存）。从 GitHub 安装的版本，等仓库有新提交后执行 `dsh plugin --profile web update dsh-whale-widget`。（没有 npm 发布通道——`dsh-whale-widget` 这个包名归上游所有，见「方式 C」。）
 - **自定义图片**：气泡由代码绘制（SVG），鲸鱼本体为 cut-out PNG，放在右下角 59.45%；换图需保证透明背景 cut-out，否则按 `whale-widget-prompt.md` 调整几何参数。
 
 ## 开发与维护
